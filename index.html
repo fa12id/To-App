@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>To-Do App with Supabase</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <!-- Auth Container -->
+  <div id="authContainer" class="modal" style="display:flex;">
+    <div class="modal-content">
+      <h2>Login / Register</h2>
+      <input type="email" id="email" placeholder="Email">
+      <input type="password" id="password" placeholder="Password">
+      <div style="display:flex; gap:10px; margin-top:10px;">
+        <button id="loginBtn" class="btn">Login</button>
+        <button id="registerBtn" class="btn">Register</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-container" style="display:none;" id="appContainer">
+    <!-- Tombol Help -->
+    <button id="helpBtn" class="btn help-btn">❓</button>
+
+    <h1>To-Do App</h1>
+
+    <!-- Progress -->
+    <div class="progress-container">
+      <svg class="progress-ring" width="80" height="80">
+        <circle class="progress-ring__circle" stroke="white" stroke-width="6" fill="transparent" r="34" cx="40" cy="40"/>
+      </svg>
+      <div class="progress-text">0/0</div>
+    </div>
+
+    <!-- Input Tugas -->
+    <div class="input-container">
+      <input type="text" id="taskInput" placeholder="Tulis tugas baru...">
+      <input type="date" id="taskDate">
+      <input type="time" id="taskTime">
+      <input type="number" id="reminder" placeholder="Notif (mnt)" min="0" style="width:90px;">
+      <button id="addTask" class="btn">➕</button>
+    </div>
+
+    <!-- Search -->
+    <div class="search-container">
+      <input type="text" id="searchInput" placeholder="Cari tugas...">
+      <button id="searchBtn" class="btn">🔍</button>
+    </div>
+
+    <!-- Filter -->
+    <div class="filter-container">
+      <button class="filter-btn btn active" data-filter="all" title="Semua">📋</button>
+      <button class="filter-btn btn" data-filter="active" title="Aktif">⚪</button>
+      <button class="filter-btn btn" data-filter="completed" title="Selesai">✔</button>
+    </div>
+
+    <!-- List -->
+    <ul id="taskList"></ul>
+  </div>
+
+  <!-- Modal Help -->
+  <div id="helpModal" class="modal">
+    <div class="modal-content">
+      <span id="closeHelp" class="close">&times;</span>
+      <h2>Panduan Aplikasi</h2>
+      <ul>
+        <li>➕ Tambah tugas: isi teks, pilih tanggal/jam, set notifikasi (opsional), lalu klik tambah.</li>
+        <li>✔ Tandai selesai: klik tombol centang di samping tugas.</li>
+        <li>✏️ Edit: klik tombol pensil untuk ubah nama tugas.</li>
+        <li>✖ Hapus: klik tombol silang untuk hapus tugas.</li>
+        <li>📊 Progress: lingkaran menunjukkan jumlah selesai / total tugas.</li>
+        <li>🔍 Cari: gunakan kotak search untuk filter tugas dengan cepat.</li>
+        <li>⚪ Filter: pilih untuk menampilkan semua / aktif / selesai saja.</li>
+        <li>🔔 Notifikasi: akan muncul sebelum deadline sesuai waktu yang diatur.</li>
+      </ul>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
