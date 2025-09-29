@@ -19,6 +19,7 @@ const taskList = document.getElementById("taskList");
 const progressText = document.querySelector(".progress-text");
 const progressCircle = document.querySelector(".progress-ring__circle");
 const searchInput = document.getElementById("searchInput");
+const logoutBtn = document.getElementById("logoutBtn");
 
 // -------- Auth --------
 document.getElementById("loginBtn").onclick = async () => {
@@ -37,7 +38,21 @@ document.getElementById("registerBtn").onclick = async () => {
   const password = document.getElementById("password").value;
   const { error } = await supabaseClient.auth.signUp({ email, password });
   if (error) return alert(error.message);
-  alert("Register berhasil, silakan login.");
+  alert("Register berhasil, silakan cek email untuk konfirmasi lalu login.");
+};
+
+// -------- Logout --------
+logoutBtn.onclick = async () => {
+  const { error } = await supabaseClient.auth.signOut();
+  if (error) {
+    alert("Gagal logout: " + error.message);
+  } else {
+    user = null;
+    tasks = [];
+    taskList.innerHTML = "";
+    appContainer.style.display = "none";
+    authContainer.style.display = "flex";
+  }
 };
 
 // -------- Task Functions --------
