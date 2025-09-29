@@ -46,12 +46,6 @@ logoutBtn.onclick = async () => {
   const { error } = await supabaseClient.auth.signOut();
   if (error) {
     alert("Gagal logout: " + error.message);
-  } else {
-    user = null;
-    tasks = [];
-    taskList.innerHTML = "";
-    appContainer.style.display = "none";
-    authContainer.style.display = "flex";
   }
 };
 
@@ -175,3 +169,35 @@ const closeHelp = document.getElementById("closeHelp");
 helpBtn.onclick = () => helpModal.style.display = "flex";
 closeHelp.onclick = () => helpModal.style.display = "none";
 window.onclick = e => { if (e.target === helpModal) helpModal.style.display="none"; };
+
+// -------- Session Persist --------
+async function checkSession() {
+  const { data } = await supabaseClient.auth.getSession();
+  if (data.session) {
+    user = data.session.user;
+    authContainer.style.display = "none";
+    appContainer.style.display = "block";
+    loadTasks();
+  } else {
+    authContainer.style.display = "flex";
+    appContainer.style.display = "none";
+  }
+}
+
+supabaseClient.auth.onAuthStateChange((_event, session) => {
+  if (session) {
+    user = session.user;
+    authContainer.style.display = "none";
+    appContainer.style.display = "block";
+    loadTasks();
+  } else {
+    user = null;
+    tasks = [];
+    taskList.innerHTML = "";
+    appContainer.style.display = "none";
+    authContainer.style.display = "flex";
+  }
+});
+
+// Jalankan pertama kali saat page load
+checkSession();
