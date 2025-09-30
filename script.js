@@ -21,7 +21,7 @@ const progressCircle = document.querySelector(".progress-ring__circle");
 const searchInput = document.getElementById("searchInput");
 const logoutBtn = document.getElementById("logoutBtn");
 
-// Toggle password show/hide
+// -------- Password toggle --------
 function togglePassword(fieldId, el) {
   const input = document.getElementById(fieldId);
   if (input.type === "password") {
@@ -33,7 +33,7 @@ function togglePassword(fieldId, el) {
   }
 }
 
-// Switch forms
+// -------- Switch forms --------
 document.getElementById("showRegister").onclick = () => {
   document.getElementById("loginForm").style.display = "none";
   document.getElementById("registerForm").style.display = "block";
@@ -43,6 +43,7 @@ document.getElementById("showLogin").onclick = () => {
   document.getElementById("loginForm").style.display = "block";
 };
 
+// -------- Auth --------
 // Login
 document.getElementById("loginBtn").onclick = async () => {
   const email = document.getElementById("loginEmail").value;
@@ -74,7 +75,7 @@ document.getElementById("forgotPassword").onclick = async () => {
   const email = prompt("Masukkan email kamu untuk reset password:");
   if (!email) return;
   const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-    redirectTo: "https://yourdomain.com/reset.html"
+    redirectTo: "https://yourdomain.com/reset.html" // ganti sesuai domain kamu
   });
   if (error) return alert(error.message);
   alert("Email reset password telah dikirim. Silakan cek inbox.");
@@ -89,7 +90,9 @@ logoutBtn.onclick = async () => {
 // -------- Task Functions --------
 async function loadTasks() {
   const { data, error } = await supabaseClient
-    .from("tasks").select("*").eq("user_id", user.id)
+    .from("tasks")
+    .select("*")
+    .eq("user_id", user.id)
     .order("created_at", { ascending: false });
   if (error) return console.error(error);
   tasks = data;
@@ -148,17 +151,17 @@ function renderTasks() {
     if (task.completed) li.classList.add("completed");
 
     const checkBtn = document.createElement("button");
-    checkBtn.classList.add("btn","check");
+    checkBtn.classList.add("btn", "check");
     checkBtn.textContent = "✔";
     checkBtn.onclick = () => updateTask(task.id, { completed: !task.completed });
 
     const deleteBtn = document.createElement("button");
-    deleteBtn.classList.add("btn","delete");
+    deleteBtn.classList.add("btn", "delete");
     deleteBtn.textContent = "✖";
     deleteBtn.onclick = () => deleteTask(task.id);
 
     const editBtn = document.createElement("button");
-    editBtn.classList.add("btn","edit");
+    editBtn.classList.add("btn", "edit");
     editBtn.textContent = "✏️";
     editBtn.onclick = () => {
       const newText = prompt("Edit tugas:", task.text);
@@ -186,24 +189,33 @@ addTaskBtn.onclick = async () => {
     deadline = new Date(`${taskDate.value}T${taskTime.value}`).toISOString();
   }
   const reminderMins = parseInt(reminderInput.value) || 0;
-  await saveTask({ text, completed:false, deadline, reminder:reminderMins });
-  taskInput.value = ""; taskDate.value=""; taskTime.value=""; reminderInput.value="";
+  await saveTask({ text, completed: false, deadline, reminder: reminderMins });
+  taskInput.value = "";
+  taskDate.value = "";
+  taskTime.value = "";
+  reminderInput.value = "";
 };
 
 taskInput.addEventListener("keypress", e => { if (e.key === "Enter") addTaskBtn.click(); });
 searchInput.oninput = () => renderTasks();
-document.querySelectorAll(".filter-btn").forEach(btn=>{
-  btn.onclick = ()=>{document.querySelectorAll(".filter-btn").forEach(b=>b.classList.remove("active"));
-    btn.classList.add("active"); currentFilter = btn.dataset.filter; renderTasks();};
+document.querySelectorAll(".filter-btn").forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentFilter = btn.dataset.filter;
+    renderTasks();
+  };
 });
 
-// Help modal
+// -------- Help Modal --------
 const helpBtn = document.getElementById("helpBtn");
 const helpModal = document.getElementById("helpModal");
 const closeHelp = document.getElementById("closeHelp");
-helpBtn.onclick = () => helpModal.style.display = "flex";
-closeHelp.onclick = () => helpModal.style.display = "none";
-window.onclick = e => { if (e.target === helpModal) helpModal.style.display="none"; };
+helpBtn.onclick = () => (helpModal.style.display = "flex");
+closeHelp.onclick = () => (helpModal.style.display = "none");
+window.onclick = e => {
+  if (e.target === helpModal) helpModal.style.display = "none";
+};
 
 // -------- Session Persist --------
 async function checkSession() {
@@ -234,4 +246,5 @@ supabaseClient.auth.onAuthStateChange((_event, session) => {
   }
 });
 
+// Jalankan saat page load
 checkSession();
