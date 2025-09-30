@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Reset Password</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    body {
+      display:flex; justify-content:center; align-items:center; height:100vh;
+      font-family:'Inter',sans-serif; background:#111; color:#fff; margin:0;
+    }
+    .box {
+      background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
+      padding:30px; border-radius:15px; text-align:center; max-width:400px; width:90%;
+    }
+    input {
+      width:100%; padding:12px; margin:10px 0; border-radius:10px;
+      border:none; outline:none; background:rgba(255,255,255,0.1); color:#fff;
+    }
+    .password-field { position: relative; }
+    .toggle-pass {
+      position:absolute; right:10px; top:30%; cursor:pointer; font-size:14px;
+    }
+    button {
+      width:100%; padding:12px; border-radius:10px; border:none;
+      cursor:pointer; font-weight:600; background:#0ff; color:#111;
+      transition: all 0.3s ease;
+    }
+    button:hover { background:#00ccaa; }
+    .msg { margin-top:15px; font-size:14px; color:#0f0; }
+    .error { color:#f55; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>🔒 Reset Password</h1>
+    <p>Masukkan password baru kamu di bawah ini.</p>
+    <div class="password-field">
+      <input type="password" id="newPassword" placeholder="Password baru">
+      <span class="toggle-pass" onclick="togglePassword('newPassword', this)">👁️</span>
+    </div>
+    <button id="resetBtn">Ubah Password</button>
+    <div id="message" class="msg"></div>
+  </div>
+
+  <script>
+    // ✅ Ganti dengan project Supabase kamu
+    const supabaseUrl = "https://crnlucdnjoclpyegnqso.supabase.co";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNybmx1Y2Ruam9jbHB5ZWducXNvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxMTc3MTUsImV4cCI6MjA3NDY5MzcxNX0.vjZIw7UuMK-iU1cPNZp1LEV4b2BKckUYTgbRIsgmmRU"; 
+    const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+    // Toggle password show/hide
+    function togglePassword(fieldId, el) {
+      const input = document.getElementById(fieldId);
+      if (input.type === "password") {
+        input.type = "text";
+        el.textContent = "🙈";
+      } else {
+        input.type = "password";
+        el.textContent = "👁️";
+      }
+    }
+
+    const resetBtn = document.getElementById("resetBtn");
+    const message = document.getElementById("message");
+
+    resetBtn.onclick = async () => {
+      const newPassword = document.getElementById("newPassword").value;
+      if (!newPassword) {
+        message.textContent = "Password tidak boleh kosong!";
+        message.classList.add("error");
+        return;
+      }
+
+      const { error } = await supabaseClient.auth.updateUser({
+        password: newPassword
+      });
+
+      if (error) {
+        message.textContent = "❌ Gagal reset: " + error.message;
+        message.classList.add("error");
+      } else {
+        message.textContent = "✅ Password berhasil diubah! Silakan login kembali.";
+        message.classList.remove("error");
+      }
+    };
+  </script>
+</body>
+</html>
