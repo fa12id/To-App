@@ -1,6 +1,6 @@
-// Supabase Init
-const supabaseUrl = "https://crnlucdnjoclpyegnqso.supabase.co"; // ganti
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNybmx1Y2Ruam9jbHB5ZWducXNvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxMTc3MTUsImV4cCI6MjA3NDY5MzcxNX0.vjZIw7UuMK-iU1cPNZp1LEV4b2BKckUYTgbRIsgmmRU"; // ganti
+// Ganti dengan project Supabase kamu
+const supabaseUrl = "https://crnlucdnjoclpyegnqso.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNybmx1Y2Ruam9jbHB5ZWducXNvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxMTc3MTUsImV4cCI6MjA3NDY5MzcxNX0.vjZIw7UuMK-iU1cPNZp1LEV4b2BKckUYTgbRIsgmmRU";
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
 let user = null;
@@ -21,10 +21,32 @@ const progressCircle = document.querySelector(".progress-ring__circle");
 const searchInput = document.getElementById("searchInput");
 const logoutBtn = document.getElementById("logoutBtn");
 
-// -------- Auth --------
+// Toggle password show/hide
+function togglePassword(fieldId, el) {
+  const input = document.getElementById(fieldId);
+  if (input.type === "password") {
+    input.type = "text";
+    el.textContent = "🙈";
+  } else {
+    input.type = "password";
+    el.textContent = "👁️";
+  }
+}
+
+// Switch forms
+document.getElementById("showRegister").onclick = () => {
+  document.getElementById("loginForm").style.display = "none";
+  document.getElementById("registerForm").style.display = "block";
+};
+document.getElementById("showLogin").onclick = () => {
+  document.getElementById("registerForm").style.display = "none";
+  document.getElementById("loginForm").style.display = "block";
+};
+
+// Login
 document.getElementById("loginBtn").onclick = async () => {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+  const email = document.getElementById("loginEmail").value;
+  const password = document.getElementById("loginPassword").value;
   const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
   if (error) return alert(error.message);
   user = data.user;
@@ -33,20 +55,35 @@ document.getElementById("loginBtn").onclick = async () => {
   loadTasks();
 };
 
+// Register
 document.getElementById("registerBtn").onclick = async () => {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-  const { error } = await supabaseClient.auth.signUp({ email, password });
+  const email = document.getElementById("registerEmail").value;
+  const password = document.getElementById("registerPassword").value;
+  const username = document.getElementById("registerUsername").value;
+  const { error } = await supabaseClient.auth.signUp({
+    email,
+    password,
+    options: { data: { username } }
+  });
   if (error) return alert(error.message);
-  alert("Register berhasil, silakan cek email untuk konfirmasi lalu login.");
+  alert("Register berhasil! Silakan cek email untuk konfirmasi.");
 };
 
-// -------- Logout --------
+// Forgot password
+document.getElementById("forgotPassword").onclick = async () => {
+  const email = prompt("Masukkan email kamu untuk reset password:");
+  if (!email) return;
+  const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+    redirectTo: "https://yourdomain.com/reset.html"
+  });
+  if (error) return alert(error.message);
+  alert("Email reset password telah dikirim. Silakan cek inbox.");
+};
+
+// Logout
 logoutBtn.onclick = async () => {
   const { error } = await supabaseClient.auth.signOut();
-  if (error) {
-    alert("Gagal logout: " + error.message);
-  }
+  if (error) alert("Gagal logout: " + error.message);
 };
 
 // -------- Task Functions --------
@@ -101,7 +138,6 @@ function renderTasks() {
     span.textContent = task.text;
     li.appendChild(span);
 
-    // Deadline
     if (task.deadline) {
       const deadline = document.createElement("span");
       deadline.classList.add("deadline");
@@ -111,7 +147,6 @@ function renderTasks() {
 
     if (task.completed) li.classList.add("completed");
 
-    // Buttons
     const checkBtn = document.createElement("button");
     checkBtn.classList.add("btn","check");
     checkBtn.textContent = "✔";
@@ -199,5 +234,4 @@ supabaseClient.auth.onAuthStateChange((_event, session) => {
   }
 });
 
-// Jalankan pertama kali saat page load
 checkSession();
