@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
+  font-family: 'Inter', sans-serif;
   background: url('./assets/bg.jpg') no-repeat center center/cover;
   color: #fff;
   display: flex;
@@ -9,9 +9,43 @@ body {
   min-height: 100vh;
 }
 
-/* Container utama */
+/* Auth box */
+.auth-box {
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(10px);
+  padding: 30px;
+  border-radius: 15px;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.auth-box h2 { margin-bottom: 20px; font-weight:600; }
+
+.auth-box input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+}
+
+.password-field { position: relative; }
+.password-field .toggle-pass {
+  position: absolute;
+  right: 10px;
+  top: 30%;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* Container utama dashboard */
 .app-container {
   background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(12px);
   padding: 30px;
   border-radius: 20px;
   width: 100%;
@@ -41,7 +75,7 @@ h1 { margin-bottom: 20px; }
 .help-btn { position: absolute; top: 15px; right: 15px; font-size: 18px; }
 .logout-btn { position: absolute; top: 15px; left: 15px; font-size: 14px; }
 
-/* Input */
+/* Input dashboard */
 .input-container, .search-container {
   display: flex;
   flex-wrap: wrap;
@@ -65,23 +99,16 @@ li {
   align-items: center;
 }
 li.completed { text-decoration: line-through; opacity: 0.7; }
-
 .check, .delete, .edit { margin-left: 6px; }
 
 /* Progress */
-.progress-container {
-  position: relative;
-  width: 80px; height: 80px; margin: 0 auto 20px;
-}
+.progress-container { position: relative; width: 80px; height: 80px; margin: 0 auto 20px; }
 .progress-ring__circle {
   stroke-dasharray: 213.63; stroke-dashoffset: 213.63;
   transition: stroke-dashoffset 0.4s ease;
   stroke: #00ffcc;
 }
-.progress-text {
-  position: absolute; top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-}
+.progress-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
 
 /* Filter */
 .filter-container { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; }
@@ -106,9 +133,5 @@ li.completed { text-decoration: line-through; opacity: 0.7; }
   width: 90%;
   color: #fff;
   text-align: center;
-}
-.modal-content input {
-  display:block; width:100%; padding:10px; margin:10px 0;
-  border-radius: 12px; border:none; outline:none;
 }
 .close { float: right; font-size: 24px; cursor: pointer; }
