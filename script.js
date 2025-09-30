@@ -56,7 +56,7 @@ document.getElementById("loginBtn").onclick = async () => {
   loadTasks();
 };
 
-// Register
+// Register (dengan redirect ke confirm.html)
 document.getElementById("registerBtn").onclick = async () => {
   const email = document.getElementById("registerEmail").value;
   const password = document.getElementById("registerPassword").value;
@@ -64,7 +64,10 @@ document.getElementById("registerBtn").onclick = async () => {
   const { error } = await supabaseClient.auth.signUp({
     email,
     password,
-    options: { data: { username } }
+    options: { 
+      data: { username },
+      emailRedirectTo: "https://nama-project.vercel.app/confirm.html" // ⬅️ ganti sesuai domain kamu
+    }
   });
   if (error) return alert(error.message);
   alert("Register berhasil! Silakan cek email untuk konfirmasi.");
@@ -75,7 +78,7 @@ document.getElementById("forgotPassword").onclick = async () => {
   const email = prompt("Masukkan email kamu untuk reset password:");
   if (!email) return;
   const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-    redirectTo: "https://yourdomain.com/reset.html" // ganti sesuai domain kamu
+    redirectTo: "https://nama-project.vercel.app/reset.html" // ⬅️ ganti sesuai domain kamu
   });
   if (error) return alert(error.message);
   alert("Email reset password telah dikirim. Silakan cek inbox.");
